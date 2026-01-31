@@ -134,5 +134,88 @@ class Tool extends Controller
 
         return sprintf('%s%s-%03d', $prefix, $dateStr, $count);
     }
+    //會計科目轉換
+    public function toSubjectSortKey(?string $key): ?string{
+        if(!$key) return null;
 
+        [$m, $s, $i, $l] = array_pad(explode('-', $key), 4, 0);
+
+         return sprintf('%02d%02d%02d%03d', (int)$m, (int)$s, (int)$i, (int)$l);
+    }
+    //分類帳科目查詢條件選項
+    public function getSubjects(){
+        //科目選單
+        $subjects = DB::table('account_item as ai')
+            ->leftJoin('account_ledger as al', function($join){
+                $join->on('ai.main_code', '=', 'al.main_code')
+                    ->on('ai.sub_code', '=', 'al.sub_code')
+                    ->on('ai.code', '=', 'al.item_code');
+            })
+            ->select(
+                'ai.main_code',
+                'ai.sub_code',
+                'ai.code as item_code',
+                'ai.name as item_name',
+                'al.code as ledger_code',
+                'al.name as ledger_name'
+            )
+            ->orderBy('ai.main_code')
+            ->orderBy('ai.sub_code')
+            ->orderBy('ai.code')
+            ->orderBy('al.code')
+            ->get();
+        
+        return $subjects;
+    }
+    //傳票轉換用字典
+    public const VOUCHER_TYPE_MAP = [
+        0 => '現金收入',
+        1 => '現金支出',
+        2 => '轉帳',
+    ];
+
+    public const VOUCHER_KIND_MAP = [
+        0 => '一般',
+        1 => '調整',
+    ];
+    //科目名稱
+    public function getSubjectNameMap(){
+        
+        return DB::table('account_item as ai')
+            ->leftJoin('account_ledger as al', function ($join) {
+                $join->on('ai.main_code', '=', 'al.main_code')
+                    ->on('ai.sub_code', '=', 'al.sub_code')
+                    ->on('ai.code', '=', 'al.item_code');
+            })
+            ->selectRaw("
+                CONCAT(
+                    ai.main_code,
+                    ai.sub_code,
+                    LPAD(ai.code, 2, '0'),
+                    CASE
+                        WHEN al.code IS NOT NULL THEN CONCAT('-', CAST(al.code AS UNSIGNED))
+                        ELSE ''
+                    END
+                ) as subject_code
+            ")
+            ->selectRaw("
+                CASE
+                    WHEN al.code IS NOT NULL THEN CONCAT(ai.name, '-', al.name)
+                    ELSE ai.name
+                END as subject_name
+            ")
+            ->pluck('subject_name', 'subject_code');
+    }
+    public function subjectSortExpr(?string $alias = null){
+        $p = $alias ? ($alias . '.') : '';
+
+        return DB::raw("
+            CONCAT(
+                LPAD({$p}main_code, 2, '0'),
+                LPAD({$p}sub_code, 2, '0'),
+                LPAD({$p}item_code, 2, '0'),
+                LPAD(COALESCE({$p}ledger_code, 0), 3, '0')
+            )
+        ");
+    }
 }

@@ -159,6 +159,9 @@ ERP_01
 	
 	*2026.01.25	
 		*拆除會計以外功能
+			loginAnalysis/index.blade的前台登入紀錄已拆除
+			ERP_01 DB已成功匯入
+			report blade ctrl 部分已匯入
 			
 
 		

@@ -102,12 +102,12 @@
 							</a>
 							<ul>
 								<li>
-									<a href="">
+									<a href="{{route('accountReport.generalLedger')}}">
 										<i class="bx bx-right-arrow-alt"></i>總分類帳
 									</a>
 								</li>
 								<li>
-									<a href="">
+									<a href="{{route('accountReport.detailedLedger')}}">
 										<i class="bx bx-right-arrow-alt"></i>明細分類帳
 									</a>
 								</li>

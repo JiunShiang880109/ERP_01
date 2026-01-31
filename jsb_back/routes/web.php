@@ -84,6 +84,10 @@ Route::prefix('accountant')->middleware('backcheckAuth')->group(function () {
 Route::prefix('accountReport')->middleware('backcheckAuth')->group(function () {
     //試算表
     Route::get('/trialBalance/index', [AccountReportCtrl::class, 'trialBalanceIndex'])->name('accountReport.trialBalance');
+    //總分類帳
+    Route::get('/generalLedger/index', [AccountReportCtrl::class, 'generalLedgerIndex'])->name('accountReport.generalLedger');
+    //明細分類帳
+    Route::get('/detailedLedger/index', [AccountReportCtrl::class, 'detailedLedgerIndex'])->name('accountReport.detailedLedger');
 });
 //左選單->商品管理->商品管理
 Route::prefix('product')->middleware('backcheckAuth')->group(function () {

@@ -15,7 +15,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0">
                     <li class="breadcrumb-item"><a href="{{url()->previous()}}"><i class="bx bx-home-alt"></i></a></li>
-                    <li class="breadcrumb-item active" aria-current="page">試算表查詢設定</li>
+                    <li class="breadcrumb-item active" aria-current="page">試算表查詢</li>
                 </ol>
             </nav>
         </div>
@@ -25,13 +25,13 @@
     <div class="row">
         <div class="col-12">
             <div class="d-flex gap-2">
-                <form method="GET" action="">
+                <form method="GET" action="{{route('accountReport.trialBalance')}}">
                     
                     <div class="d-flex align-items-center gap-3 mb-3 flex-nowrap">
                         <div class="col-auto fw-bold">會計年度</div>
                         <select name="fiscal_year" class="form-select">
                             @for($y = now()->year - 1; $y <= now()->year + 1; $y++)
-                                <option value="{{ $y }}" {{ (int)old('fiscal_year', now()->year) === (int)$y ? 'selected' : '' }}>
+                                <option value="{{ $y }}" {{ (int)$year === (int)$y ? 'selected' : '' }}>
                                 {{ $y }}
                                 </option>
                             @endfor
@@ -40,21 +40,40 @@
                         <div class="col-auto fw-bold">月份</div>
                         <select name="fiscal_month" class="form-select w-auto">
                             @for($m = 1; $m <= 12; $m++)
-                                <option value="{{ $m }}" {{ (int)old('fiscal_month', now()->month) === (int)$m ? 'selected' : '' }}>
+                                <option value="{{ $m }}" {{ (int)$month === (int)$m ? 'selected' : '' }}>
                                 {{ $m }} 月
                                 </option>
                             @endfor
                         </select>
 
+                        <div class="col-auto fw-bold">試算方式</div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="mode"
+                                   value="period"
+                                   {{request('mode', 'accumulate') === 'period' ? 'checked' : ''}}>
+                            <label class="form-check-label">本期</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="mode"
+                                   value="accumulate"
+                                   {{request('mode', 'accumulate') === 'accumulate' ? 'checked' : ""}}>
+                            <label class="form-check-label">累計</label>
+                        </div>
                         <button type="submit" class="btn btn-success px-4 text-nowrap">
                             查詢
                         </button>
                     </div>
 
                 </form>
+ 
             </div>
         </div>
     </div>
+    
 
     {{--  --}}
     <div class="col-lg-12">
@@ -75,9 +94,55 @@
                         </tr>
                     </thead>
                     <tbody style="vertical-align:middle;">
-
+                        {{--{{dd($rows)}}--}}
+                        
+                        @forelse($rows as $row)
+                            <tr>
+                                <td>-</td>
+                                <td>{{$row->account_code}}</td>
+                                <td>{{$row->account_name}}</td>
+                                <td class="text-end">{{number_format($row->opening_debit, 2)}}</td>
+                                <td class="text-end">{{number_format($row->opening_credit, 2)}}</td>
+                                <td class="text-end">{{number_format($row->period_debit, 2)}}</td>
+                                <td class="text-end">{{number_format($row->period_credit, 2)}}</td>
+                                <td class="text-end">{{number_format($row->ending_debit, 2)}}</td>
+                                <td class="text-end">{{number_format($row->ending_credit, 2)}}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="text-center text-muted">
+                                    尚無資料
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
-                  
+
+                    <tfoot>
+                        <tr class="fw-bold table-secondary">
+                            {{-- 前三欄合併 --}}
+                            <td colspan="3" class="text-end">合計</td>
+
+                            {{-- 期初 --}}
+                            <td class="text-end">{{ number_format($sumOpeningDebit, 2) }}</td>
+                            <td class="text-end">{{ number_format($sumOpeningCredit, 2) }}</td>
+
+                            {{-- 本期 --}}
+                            <td class="text-end">{{ number_format($sumPeriodDebit, 2) }}</td>
+                            <td class="text-end">{{ number_format($sumPeriodCredit, 2) }}</td>
+
+                            {{-- 期末 --}}
+                            <td class="text-end">{{ number_format($sumEndingDebit, 2) }}</td>
+                            <td class="text-end">{{ number_format($sumEndingCredit, 2) }}</td>
+                        </tr>
+
+                        @if($sumEndingDebit !== $sumEndingCredit)
+                        <tr>
+                            <td colspan="9" class="text-center text-danger fw-bold">
+                                ⚠ 借貸不平衡，差額 {{ number_format(abs($sumEndingDebit - $sumEndingCredit), 2) }}
+                            </td>
+                        </tr>
+                        @endif
+                    </tfoot>
                 </table>
             </div>
         </div>
