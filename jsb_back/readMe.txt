@@ -14,20 +14,18 @@ ERP_01
 				-\controllers back-end
 					-AccountantController.php會計類別科目
 					-AccountVoucherCtrl.php會計傳票
+					-AccountReportCtrl.php會計報表
 					-DashboardController.php 報表分析
 						│
 						├── day()  → /dashboard/day  → dashboard/day.blade.php
 						│
 						├── mon()  → /dashboard/mon  → dashboard/mon.blade.php
-						│
-						└── orders() → /dashboard/orders → dashboard/orders.blade.php
-					-ExpenseController.php 支出管理
-					-InventoryController.php 成本管理
 					-OrderApiController.php訂單結帳管理
 					-OrderController.php訂單結帳管理
 					-ProductController.php商品管理
 					-Tool.php部分功能
-					
+					-MemberController.php (待分析，拆除對象)	
+									
 				-\Middleware 
 					Account_cate_main.php會計-主類別
 					Account_cate_sub.php會計-子類別
@@ -35,13 +33,8 @@ ERP_01
 					Account_ledger.php會計-子科目
 					Account_voucher.php會計-傳票
 					Account_voucher_item.php會計-傳票分錄
-					Expense.php 支出
-					Expense_Cate_Main.php支出類別
 					Orders2_db.php 訂單
 					Dashboard_db.php 報表
-					Ingredients_db 成本
-					Ingredients_purchase_cateMain.php成本類別
-					Ingredients_puchase_order.php成本清單
 					
 				-Kernel.php 設定middlewar參數
 			-\Traits(自定義（Custom）)一些常用的工具方法
@@ -64,28 +57,13 @@ ERP_01
 					├── voucher_detail.blade.php 	傳票分錄明細
 					├── add.blade.php 				新增傳票頁面
 					├── category.blade.php 			類別科目管理
+				-\accountantReport 會計報表頁面
 				-\dashboard 報表分析前端頁面
 					│
 					├── day()  → /dashboard/day  → dashboard/day.blade.php
 					│
 					├── mon()  → /dashboard/mon  → dashboard/mon.blade.php
-					│
-					└── orders() → /dashboard/orders → dashboard/orders.blade.php
-				-\expenses 支出管理前端頁面
-					│
-					├── expenses/index.blade.php
-					├── expenses/add.blade.php
-					├── expenses/edit.blade.php
-					├── expenses/category.blade.php
-				-\inventory庫存成本管理
-					│
-					├── inventory/category.blade.php 		類別管理
-					├── inventory/add_ingredient.blade.php 	品項管理-新增品項
-					├── inventory/edit_ingredient.blade.php 品項管理-修改品項
-					├── inventory/index.blade.php 品項管理
-					├── inventory/checklist.blade.php 		訂單項目
-					├── inventory/add_checklist.blade.php 	訂單項目-新增
-				-product商品管理
+				-product商品管理(待分析，拆除對象)
 					│
 					├── product/category.blade.php 			類別管理
 					├── product/category_edit.blade.php 	類別管理-編輯
@@ -162,6 +140,7 @@ ERP_01
 			loginAnalysis/index.blade的前台登入紀錄已拆除
 			ERP_01 DB已成功匯入
 			report blade ctrl 部分已匯入
+			庫存支出功能跟店家桌號功能已拆除
 			
 
 		

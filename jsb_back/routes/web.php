@@ -7,10 +7,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LoginAnalysisController;
-use App\Http\Controllers\MemberPointHistoryController;
-use App\Http\Controllers\StoreController;
-use App\Http\Controllers\ExpenseController;
-use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\Tool;
 use App\Http\Controllers\AccountantController;
 use App\Http\Controllers\AccountReportCtrl;
@@ -37,10 +33,6 @@ Route::prefix('dashboard')->middleware('backcheckAuth')->group(function () {
     //月報表分析
     Route::any('/mon', [DashboardController::class, 'mon'])->name('mon');
     Route::any('/mon_chartApi', [DashboardController::class, 'mon_chartApi'])->name('mon_chartApi');
-    //訂單
-    Route::any('/orders', [DashboardController::class, 'orders'])->name('orders');
-    Route::get('/orders_detail', [DashboardController::class, 'orders_detail'])->name('orders_detail');
-    // //收銀機分析
 });
 //會計管理
 Route::prefix('accountant')->middleware('backcheckAuth')->group(function () {
@@ -89,16 +81,16 @@ Route::prefix('accountReport')->middleware('backcheckAuth')->group(function () {
     //明細分類帳
     Route::get('/detailedLedger/index', [AccountReportCtrl::class, 'detailedLedgerIndex'])->name('accountReport.detailedLedger');
 });
-//左選單->商品管理->商品管理
+//左選單->商品管理->商品管理(拆除)
 Route::prefix('product')->middleware('backcheckAuth')->group(function () {
     /*********產品管理********/
     Route::any('/index', [ProductController::class, 'index'])->name('Products');
 
-    // 商品匯入
+    // 商品匯入(保留)
     Route::post('/importCSV', [ProductController::class, 'importCSV'])->name('ProductImportCSV');
-    // 商品匯出csv
+    // 商品匯出csv(保留)
     Route::get('/export/csv', [ProductController::class, 'exportCSV'])->name('ProductExportCSV');
-    // 商品匯出xlsx
+    // 商品匯出xlsx(保留)
     Route::get('/export/xlsx', [ProductController::class, 'exportXLSX'])->name('ProductExportXLSX');
     //刪除
     Route::get('/product_del/{productId}', [ProductController::class, 'product_del'])->name('product_del');
@@ -144,64 +136,7 @@ Route::prefix('loginAnalysis')->middleware('backcheckAuth')->group(function () {
     Route::get('/index', [LoginAnalysisController::class, 'index'])->name('loginAnalysisIndex');
 });
 
-//庫存成本管理
-Route::prefix('inventory')->middleware('backcheckAuth')->group(function () {
-    
-    //類別管理
-    Route::get('/inventoryIndex', [InventoryController::class, 'categoryIndex'])->name('inventory.category');
-    Route::post('/inventory_add', [InventoryController::class, 'category_add'])->name('inventory.category_add');
-    Route::post('/category/{id}/update', [InventoryController::class, 'category_update'])->name('inventory.category_update');
-    Route::delete('/category/{id}/delete', [InventoryController::class, 'category_delete'])->name('inventory.category_delete');
-    //項目管理
-    Route::get('/index', [InventoryController::class, 'index'])->name('inventory.index');
-    Route::get('/add', [InventoryController::class, 'add'])->name('inventory.add_ingredient');
-    Route::post('/store', [InventoryController::class, 'store'])->name('inventory.store');
-    Route::get('/id={id}/edit', [InventoryController::class, 'edit'])->name('inventory.edit_ingredient');
-    Route::post('/{id}/update',[InventoryController::class, 'update'])->name('inventory.update');
-    Route::delete('/{id}/delete', [InventoryController::class, 'delete'])->name('inventory.delete');
-    //清單管理
-    Route::get('/checkListIndex', [InventoryController::class, 'checkListIndex'])->name('inventory.checklist');
-    Route::get('/checkList_add', [InventoryController::class, 'checkList_add'])->name('inventory.add_checklist');
-    Route::post('/checkList_store', [InventoryController::class, 'checkList_store'])->name('inventory.store_checklist');
-    Route::post('/inventory/checkList/arrival/{id}', [InventoryController::class,'checkListArrival'])->name('inventory.checklist.arrival');
-    Route::post('/inventory/checkList/cancel/{id}', [InventoryController::class,'checkListCancel'])->name('inventory.checklist.cancel');
-    Route::delete('/{id}/checkListDelete', [InventoryController::class, 'checkListDelete'])->name('inventory.checklistDelete');
-
-});
-
-//支出管理
-Route::prefix('expenses')->middleware('backcheckAuth')->group(function () {
-    //支出管理
-    Route::get('/index', [ExpenseController::class, 'index'])->name('expenses.index');
-    Route::get('/add', [ExpenseController::class, 'add'])->name('expenses.add');
-    Route::post('/store', [ExpenseController::class, 'store'])->name('expenses.store');
-    Route::get('/id={id}/edit', [ExpenseController::class, 'edit'])->name('expenses.edit');
-    Route::post('/id/update',[ExpenseController::class, 'update'])->name('expenses.update');
-    Route::delete('/{id}/delete', [ExpenseController::class, 'delete'])->name('expenses.delete');
-    //支出類別
-    Route::get('/categoryIndex', [ExpenseController::class, 'categoryIndex'])->name('expenses.category');
-    Route::post('/category_add', [ExpenseController::class, 'category_add'])->name('expenses.category_add');
-    Route::post('/category/{id}/update', [ExpenseController::class, 'category_update'])->name('expenses.category_update');
-    Route::delete('/category/{id}/delete', [ExpenseController::class, 'category_delete'])->name('expenses.category_delete');
-});
-
-// 點數紀錄
-Route::prefix('MemberPointHistory')->middleware('backcheckAuth')->group(function () {
-    //登入
-    Route::get('/index', [MemberPointHistoryController::class, 'index'])->name('memberPointHistoryIndex');
-});
-
-//店家相關
-Route::prefix('store')->middleware('backcheckAuth')->group(function () {
-    //桌號資訊
-    Route::get('/table_info', [StoreController::class, 'table_info'])->name('table_info');
-
-    //新增桌號
-    Route::post('/add_table', [StoreController::class, 'add_table'])->name('add_table');
-   
-    //刪除桌號
-    Route::delete('/delete_table', [StoreController::class, 'delete_table'])->name('delete_table');
 
 
-});
+
 

@@ -160,18 +160,6 @@ Route::prefix('Order')->group(function () {
 
 });
 
-Route::prefix('store')->group(function () {
-
-    //店家資訊
-    Route::post('/', [StoreApiController::class, 'info'])->name('Info');
-
-
-    //桌號判斷
-    Route::get('/{tablecode}', [StoreApiController::class, 'tableinfo'])->name('TableInfo');
-
-
-});
-
 //店家資訊
 Route::post('/download', [ProductApiController::class, 'download'])->name('download');
 
@@ -232,21 +220,12 @@ Route::prefix('LoginAnalysis')->group(function () {
 });
 /******************************信用卡********************************** */
 
-// 點數紀錄
-Route::prefix('MemberPointHistory')->group(function () {
-    // 取點數紀錄
-    Route::post('/', [MemberPointHistoryController::class, 'memberPointHistory'])->name('memberPointHistory');
-});
-
-
-
-
 
 /******************************會員回饋/扣點********************************** */
 
 Route::prefix('Member')->group(function () {
 
-    // 會員回饋or扣點
+    // 會員回饋or扣點(待分析)
     Route::post('/money', [MemberController::class, 'money'])->name('MemberMoney');
 
 
