@@ -84,7 +84,6 @@
 					<ul>
 						<li> <a href="{{route('day')}}"><i class="bx bx-right-arrow-alt"></i>日報表分析</a></li>
 						<li> <a href="{{route('mon')}}"><i class="bx bx-right-arrow-alt"></i>月報表分析</a></li>
-						<li> <a href="{{route('orders')}}"><i class="bx bx-right-arrow-alt"></i>訂單查詢</a></li>
 					</ul>
 				</li>
 				<li>
